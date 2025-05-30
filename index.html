@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Planner</title>
+    <script src="index.js" defer></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <h1>Party Planner</h1>
+
+    <div class="center-div">
+        <div class="create-event-container">
+            <h2>Create an Event</h2>
+            <form class="form-flex-container">
+                <label for="eventName">
+                    Event Name: 
+                </label>
+                <input type="text" name="eventName" id="eventName">
+                <label for="date">
+                    Date: 
+                </label>
+                <input type="date" name="date" id="date">
+                <label for="time">
+                    Time: 
+                </label>
+                <input type="time" name="time" id="time">
+                <label for="location">
+                    Location: 
+                </label>
+                <input type="text" name="location" id="location">
+                <label for="description">
+                    Description:
+                </label>
+                <textarea name="description" rows="5" id="description"></textarea>
+                <input type="button" value="Submit" id="submit-button">
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <div class="event-grid"></div>
+
+    <!-- <div class="event-container">
+        <img src="./images/party.jpeg">
+        <div class="event-details">
+            <span>Cosmic Gate</span>
+            <span>Date</span>
+            <span>Time</span>
+            <span>Location</span>
+            <span>Description: Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry</span>
+        </div>
+        <div class="div-delete-button">
+            <button>DELETE</button>
+        </div>
+    </div> -->
+</body>
+</html>
