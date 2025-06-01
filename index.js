@@ -1,5 +1,6 @@
 const COHORT = "2109-CPU-RM-WEB-PTt";
 const API_URL = `https://fsa-crud-2aa9294fe819.herokuapp.com/api/${COHORT}/events`;
+//https://fsa-crud-2aa9294fe819.herokuapp.com/api/2503-ftb-et-web-am/events
 
 const state = {
     //events to be used to store API fetched data
@@ -12,7 +13,6 @@ const state = {
         description:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry",
         date: "Sat, Jun 14",
-        time: "10pm",
         location: "Stereo Live Nation",
         },
         {
@@ -21,7 +21,6 @@ const state = {
         description:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry",
         date: "Sat, Jun 14",
-        time: "10pm",
         location: "Stereo Live Nation",
         },
         {
@@ -30,7 +29,6 @@ const state = {
         description:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry",
         date: "Sat, Jun 14",
-        time: "10pm",
         location: "Stereo Live Nation",
         },
         {
@@ -39,7 +37,6 @@ const state = {
         description:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry",
         date: "Sat, Jun 14",
-        time: "10pm",
         location: "Stereo Live Nation",
         },
         {
@@ -48,7 +45,6 @@ const state = {
         description:
             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry",
         date: "Sat, Jun 14",
-        time: "10pm",
         location: "Stereo Live Nation",
         },
     ],
@@ -57,19 +53,105 @@ const state = {
 //use fetch to get all Events from API
 const getAllEvents = async () => {
     try {
-        const response = await fetch(API_URL)
-        // console.log(response)
+      const response = await fetch(API_URL);
+      // console.log(response)
 
-        //using {    } the data is being deconstructed from the .json() body
+      //using {    } the data is being deconstructed from the .json() body
+      const { data } = await response.json()
+      //const data = await response.json()//
+      console.log(data);
+
+      //stores fetched data to our state of events
+      state.events = data;
+      renderEvents();
+
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+const getSingleEvent = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/${id}`)
         const { data } = await response.json()
         console.log(data)
 
-        //stores fetched data to our state of events
-        state.events = data
+        state.events.push(data)
+
+        console.log(state.events)
+
         renderEvents()
     } catch (error) {
         console.log(error.message)
     }
+}
+
+const createEvent = async (eventE) => {
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      //data: field had to be hard coded for the specific date
+    //   const testData = {
+    //     name: eventE.name,
+    //     description: eventE.description,
+    //     date: "2021-09-15T00:00:00.000Z",
+    //     location: eventE.location,
+    //   };
+      const testData = {...eventE, date: "2021-09-15T00:00:00.000Z",} //uses object property shorthand but with date: "2021****.000Z" override the date
+
+      //fetches data using POST with body
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(testData),
+        headers: myHeaders,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const responseData = await response.text();
+      console.log("logged repsonse error: " + responseData);
+
+      getAllEvents();
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
+function addEventListenerToForm() {
+    const form = document.querySelector("#new-event-form");
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        //console.log("submit works");
+
+        const name = document.getElementById("eventName").value;
+        const date = document.getElementById('date').value
+        const location = document.getElementById('location').value
+        const description = document.getElementById('description').value
+        //console.log(name);
+
+        const eventE = {
+            name,
+            description,
+            date,
+            location
+        }
+        // console.log(eventE)
+
+        try {
+            await createEvent(eventE)
+        } catch (error) {
+            console.log(error.message)
+        }
+
+        form.reset()
+
+        state.events.push(eventE)
+
+        renderEvents()
+    });
 }
 
 function renderEvents() {
@@ -90,7 +172,6 @@ function renderEvents() {
                 <div class="event-details">
                     <span>Event Name: ${eventE.name}</span>
                     <span>Date: ${eventE.date}</span>
-                    <span>Time: ${eventE.time}</span>
                     <span>Location: ${eventE.location}</span>
                     <span>Description: ${eventE.description}</span>
                 </div>
@@ -111,32 +192,40 @@ function renderEvents() {
             const eventid = delButton.dataset.eventId;
 
             removeEvent(eventid);       
-            // console.log("removed successful" + eventid);
-
-            renderEvents();         //when you click 'Delete' button it renders all the cards
           });
         });
     });
 }
 
 //update the state of events
-function removeEvent(id) {
-    const newEvents = []
+const removeEvent = async (id) => {
+//   id = Number(id);
+//   console.log(typeof id);
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
 
-    //removes the event, by creating a newEvents to hold all the persisted event without the event-id
-    state.events.forEach((eventE) => {
-        if (eventE.id !== Number(id)) {
-            newEvents.push(eventE)
-        }
-    })
+    if (!response.ok) {
+      console.log("HTTP Error: " + response.status);
+      return;
+    }
 
-    //updates the current state with the newly Events array
-    state.events = newEvents
+    getAllEvents()
+
+  } catch (error) {
+    console.log(error.message);
+  }
+
+  // Remove event locally **only if the API deletion was successful** //AI generated
+  // state.events = state.events.filter((eventE) => eventE.id !== id);
 }
 
 function init() {
     getAllEvents()
+    // getSingleEvent(9373)             //testing get single event based on id=9373
     // renderEvents()
+    addEventListenerToForm();
 }
 
 init()

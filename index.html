@@ -13,19 +13,15 @@
     <div class="center-div">
         <div class="create-event-container">
             <h2>Create an Event</h2>
-            <form class="form-flex-container">
+            <form class="form-flex-container" id="new-event-form">
                 <label for="eventName">
                     Event Name: 
                 </label>
-                <input type="text" name="eventName" id="eventName">
+                <input type="text" name="name" id="eventName">
                 <label for="date">
                     Date: 
                 </label>
                 <input type="date" name="date" id="date">
-                <label for="time">
-                    Time: 
-                </label>
-                <input type="time" name="time" id="time">
                 <label for="location">
                     Location: 
                 </label>
@@ -34,7 +30,7 @@
                     Description:
                 </label>
                 <textarea name="description" rows="5" id="description"></textarea>
-                <input type="button" value="Submit" id="submit-button">
+                <input type="submit" value="Submit" id="submit-button">
             </form>
         </div>
     </div>
